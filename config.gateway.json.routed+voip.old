@@ -1,0 +1,308 @@
+{
+    "firewall": {
+        "ip-src-route": "disable",
+        "ipv6-name": {
+            "WANv6_IN": {
+                "default-action": "drop",
+                "description": "WAN inbound traffic forwarded to LAN",
+                "enable-default-log": "''",
+                "rule": {
+                    "10": {
+                        "action": "accept",
+                        "description": "Allow established/related sessions",
+                        "state": {
+                            "established": "enable",
+                            "related": "enable"
+                        }
+                    },
+                    "20": {
+                        "action": "drop",
+                        "description": "Drop invalid state",
+                        "state": {
+                            "invalid": "enable"
+                        }
+                    }
+                }
+            },
+            "WANv6_LOCAL": {
+                "default-action": "drop",
+                "description": "WAN inbound traffic to the router",
+                "enable-default-log": "''",
+                "rule": {
+                    "10": {
+                        "action": "accept",
+                        "description": "Allow established/related sessions",
+                        "state": {
+                            "established": "enable",
+                            "related": "enable"
+                        }
+                    },
+                    "20": {
+                        "action": "drop",
+                        "description": "Drop invalid state",
+                        "state": {
+                            "invalid": "enable"
+                        }
+                    },
+                    "30": {
+                        "action": "accept",
+                        "description": "Allow IPv6 icmp",
+                        "protocol": "ipv6-icmp"
+                    },
+                    "40": {
+                        "action": "accept",
+                        "description": "allow dhcpv6",
+                        "destination": {
+                            "port": "546"
+                        },
+                        "protocol": "udp",
+                        "source": {
+                            "port": "547"
+                        }
+                    }
+                }
+            }
+        },
+        "ipv6-receive-redirects": "disable",
+        "ipv6-src-route": "disable",
+        "log-martians": "enable",
+        "source-validation": "disable"
+    },
+    "interfaces": {
+        "bridge": {
+            "br0": {
+                "aging": "300",
+                "bridged-conntrack": "disable",
+                "hello-time": "2",
+                "max-age": "20",
+                "priority": "32768",
+                "promiscuous": "disable",
+                "stp": "false"
+            }
+        },
+        "ethernet": {
+            "eth0": {
+                "description": "eth0 - FTTH",
+                "duplex": "auto",
+                "mtu": "1512",
+                "speed": "auto",
+                "vif": {
+                    "4": {
+                        "address": [
+                            "dhcp"
+                        ],
+                        "description": "eth0.4 - IPTV",
+                        "dhcp-options": {
+                            "client-option": [
+                                "send vendor-class-identifier &quot;IPTV_RG&quot;;",
+                                "request subnet-mask, routers, rfc3442-classless-static-routes;"
+                            ],
+                            "default-route": "no-update",
+                            "default-route-distance": "210",
+                            "name-server": "update"
+                        }
+                    },
+                    "6": {
+                        "description": "eth0.6 - Internet",
+                        "mtu": "1508",
+                        "pppoe": {
+                            "2": {
+                                "idle-timeout": "180",
+                                "dhcpv6-pd": {
+                                    "no-dns": "''",
+                                    "pd": {
+                                        "0": {
+                                            "interface": {
+                                                "eth1": "''"
+                                            },
+                                            "prefix-length": "/48"
+                                        }
+                                    },
+                                    "rapid-commit": "disable"
+                                },
+                                "firewall": {
+                                    "in": {
+                                        "ipv6-name": "WANv6_IN",
+                                        "name": "WAN_IN"
+                                    },
+                                    "local": {
+                                        "ipv6-name": "WANv6_LOCAL",
+                                        "name": "WAN_LOCAL"
+                                    }
+                                },
+                                "ipv6": {
+                                    "address": {
+                                        "autoconf": "''"
+                                    },
+                                    "dup-addr-detect-transmits": "1",
+                                    "enable": "''"
+                                },
+                                "mtu": "1500",
+                                "name-server": "auto",
+                                "password": "1234",
+                                "user-id": "FB7390@xs4all.nl"
+                            }
+                        }
+                    },
+                    "7": {
+                        "bridge-group": {
+                            "bridge": "br0"
+                        },
+                        "description": "eth0.7 - VOIP",
+                        "mtu": "1500"
+                    }
+                }
+            },
+            "eth1": {
+                "description": "eth1 - LAN",
+                "duplex": "auto",
+                "speed": "auto",
+                "ipv6": {
+                    "dup-addr-detect-transmits": "1",
+                    "router-advert": {
+                        "cur-hop-limit": "64",
+                        "link-mtu": "0",
+                        "managed-flag": "false",
+                        "max-interval": "600",
+                        "name-server": [
+                            "2001:4860:4860::8888",
+                            "2001:4860:4860::8844"
+                        ],
+                        "other-config-flag": "false",
+                        "prefix": {
+                            "::/64": {
+                                "autonomous-flag": "true",
+                                "on-link-flag": "true",
+                                "valid-lifetime": "2592000"
+                            }
+                        },
+                        "radvd-options": [
+                            "RDNSS 2001:4860:4860::8888 2001:4860:4860::8844 {};"
+                        ],
+                        "reachable-time": "0",
+                        "retrans-timer": "0",
+                        "send-advert": "true"
+                    }
+                }
+            },
+            "eth2": {
+                "description": "eth2 - ExperiaBox",
+                "duplex": "auto",
+                "speed": "auto",
+                "vif": {
+                    "7": {
+                        "bridge-group": {
+                            "bridge": "br0"
+                        },
+                        "description": "eth2.7 - ExperiaBox VOIP",
+                        "mtu": "1500"
+                    }
+                }
+            }
+        }
+    },
+    "protocols": {
+        "igmp-proxy": {
+            "interface": {
+                "eth0.4": {
+                    "alt-subnet": [
+                        "0.0.0.0/0"
+                    ],
+                    "role": "upstream",
+                    "threshold": "1"
+                },
+                "eth1": {
+                    "alt-subnet": [
+                        "0.0.0.0/0"
+                    ],
+                    "role": "downstream",
+                    "threshold": "1"
+                }
+            }
+        },
+        "static": {
+            "interface-route6": {
+                "::/0": {
+                    "next-hop-interface": {
+                        "pppoe2": "''"
+                    }
+                }
+            },
+            "route": {
+                "213.75.112.0/21": {
+                    "next-hop": {
+                        "10.228.192.1": "''"
+                    }
+                }
+            }
+        }
+    },
+    "port-forward": {
+        "auto-firewall": "enable",
+        "wan-interface": "pppoe2"
+    },
+    "service": {
+        "dhcp-server": {
+            "hostfile-update": "disable",
+            "shared-network-name": {
+                "LAN_192.168.2.0-24": {
+                    "authoritative": "enable",
+                    "subnet": {
+                        "192.168.2.0/24": {
+                            "dns-server": [
+                                "192.168.2.254",
+                                "8.8.8.8",
+                                "8.8.4.4"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "dns": {
+            "forwarding": {
+                "cache-size": 150,
+                "name-server": [
+                    "8.8.8.8",
+                    "8.8.4.4"
+                ],
+                "except-interface": ["eth0", "eth2","eth0.6"],
+                "options": [
+                    "listen-address=192.168.2.254"
+                ]
+            }
+        },
+        "nat": {
+            "rule": {
+                "5000": {
+                    "description": "IPTV",
+                    "destination": {
+                        "address": "213.75.112.0/21"
+                    },
+                    "log": "disable",
+                    "outbound-interface": "eth0.4",
+                    "protocol": "all",
+                    "type": "masquerade"
+                },
+                "5010": {
+                    "description": "KPN Internet",
+                    "log": "enable",
+                    "outbound-interface": "pppoe2",
+                    "protocol": "all",
+                    "source": {
+                        "address": "192.168.2.0/24"
+                    },
+                    "type": "masquerade"
+                }
+            }
+        }
+    },
+    "system": {
+        "name-server": [
+            "8.8.8.8",
+            "8.8.4.4",
+            "2001:4860:4860::8888",
+            "2001:4860:4860::8844"
+        ]
+    }
+}

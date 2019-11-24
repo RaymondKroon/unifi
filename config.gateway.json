@@ -207,16 +207,16 @@
       "name-server":[  
          "1.1.1.1",
          "1.0.0.1"
-      ]
-   },
-   "task-scheduler": {
-      "task": {
-          "updateIPTVroute": {
-              "executable": {
-                  "path": "/config/scripts/tvroute.sh"
-              },
-              "interval": "5m"
-          }
-      }
-  }
+      ],
+      "task-scheduler": {
+         "task": {
+             "updateIPTVroute": {
+                 "executable": {
+                     "path": "/config/scripts/tvroute.sh"
+                 },
+                 "interval": "5m"
+             }
+         }
+     }
+   }
 }

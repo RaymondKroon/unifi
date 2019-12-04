@@ -5,6 +5,9 @@
 - Force provision USG
 
 # Setup vpn
+
+- Copy `fix-vpn.sh` to USG `/config/scripts`.
+
 ```
 configure
 delete vpn l2tp remote-access dhcp-interface eth0.6

@@ -61,23 +61,7 @@
             }
          },
          "eth1":{  
-            "description":"eth1 - LAN",
-            "address":[  
-               "192.168.2.254/24"
-            ],
-            "duplex":"auto",
-            "firewall":{  
-               "in":{  
-                  "name":"LAN_IN"
-               },
-               "local":{  
-                  "name":"LAN_LOCAL"
-               },
-               "out":{  
-                  "name":"LAN_OUT"
-               }
-            },
-            "speed":"auto"
+            "description":"eth1 - LAN"
          },
          "eth2":{  
             "disable":"''",
@@ -169,35 +153,6 @@
                "log":"disable",
                "outbound-interface":"pppoe2",
                "protocol":"all",
-               "source":{  
-                  "group":{  
-                     "network-group":"corporate_network"
-                  }
-               },
-               "type":"masquerade"
-            },
-            "6012":{  
-               "description":"MASQ remote_user_vpn_network to WAN",
-               "log":"disable",
-               "outbound-interface":"pppoe2",
-               "protocol":"all",
-               "source":{  
-                  "group":{  
-                     "network-group":"remote_user_vpn_network"
-                  }
-               },
-               "type":"masquerade"
-            },
-            "6013":{  
-               "description":"MASQ guest_network to WAN",
-               "log":"disable",
-               "outbound-interface":"pppoe2",
-               "protocol":"all",
-               "source":{  
-                  "group":{  
-                     "network-group":"guest_network"
-                  }
-               },
                "type":"masquerade"
             }
          }
@@ -226,3 +181,4 @@
      }
    }
 }
+
